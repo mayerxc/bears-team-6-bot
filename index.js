@@ -2,16 +2,19 @@ const passport = require('passport');
 const SpotifyStrategy = require('passport-spotify').Strategy;
 const express = require('express');
 const session = require('express-session');
+const bodyParser = require('body-parser');
 const axios = require('axios');
 
 require('dotenv').load();
 
 var app = express();
+app.use(bodyParser.urlencoded({extended: false}));
+app.use(bodyParser.json());
 
 passport.use(new SpotifyStrategy({
-    clientID: process.env.SpotifyId,
-    clientSecret: process.env.SpotifySecret,
-    callbackURL: "http://localhost:3000/auth/spotify/callback"    
+    clientID: process.env.SPOTIFY_ID,
+    clientSecret: process.env.SPOTIFY_SECRET,
+    callbackURL: 'https://fb259514.ngrok.io/auth/spotify/callback'   
 }, function(accessToken, refreshToken, profile, done) {
     var user = {};
     user.spotify = {};
@@ -51,8 +54,8 @@ app.get('/success', function(req,res){
                 song: item.track.name
             });
         });
-
-        res.json(data); });    
+        console.log('the token is', req.user.spotify.token);
+        res.json(data); });
 });
 
 app.get('/auth/spotify',
@@ -68,6 +71,28 @@ app.get('/auth/spotify/callback',
     // Successful authentication, redirect home.
     res.redirect('/success');
   });
+
+app.post('/testing123', (req, res) => {
+    //const url = `https://accounts.spotify.com/authorize?client_id=${process.env.SPOTIFY_ID}&redirect_uri=https://fb259514.ngrok.io/testing123/callback&scope=user-read-private%20user-read-email&response_type=token`;
+    const url = 'https://fb259514.ngrok.io/auth/spotify';
+    const responseObj = {
+        'text': 'Click the link below to login',
+        'response_type': 'in_channel',
+        'attachments': [{
+            'title': 'Login',
+            'title_link': url
+        }]    
+    }
+    return res.send(responseObj);
+});
+
+app.get('/testing123/callback', (req, res) => {
+    console.log('success!');
+    console.log('callback url req.params is', req.params);
+    console.log('callback url req.query is', req.query);
+    res.send('You are now logged in!');
+});
+
 
 app.listen(3000, function() {
     console.log('now listening on port 3000');
