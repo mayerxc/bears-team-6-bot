@@ -8,7 +8,7 @@ const mongoose = require('mongoose');
 const User = require('./models/user');
 require('dotenv').load();
 
-mongoose.connect('mongodb://localhost:5000/spotifyJukebox');
+mongoose.connect('mongodb://localhost:27017/spotifyJukebox');
 mongoose.Promise = global.Promise;
 
 var app = express();
@@ -147,7 +147,7 @@ app.get('/auth/spotify/callback',
   });
 
 app.post('/login', (req, res) => {
-    const url = 'http://d17fe985.ngrok.io/auth/spotify?userName=' + req.body.user_name + '&userId=' + req.body.user_id + '&teamName=' + req.body.team_domain + '&channelName=' + req.body.channel_name + '&responseUrl=' + req.body.response_url;
+    const url = 'https://8e53e4da.ngrok.io/auth/spotify?userName=' + req.body.user_name + '&userId=' + req.body.user_id + '&teamName=' + req.body.team_domain + '&channelName=' + req.body.channel_name + '&responseUrl=' + req.body.response_url;
     
     const responseObj = {
         'text': 'Click the link below to login',
@@ -156,6 +156,7 @@ app.post('/login', (req, res) => {
             'title_link': url
         }]    
     }
+    console.log(responseObj);
     return res.send(responseObj);
 });
 

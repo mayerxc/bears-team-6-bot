@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
-    "start-db": "mongod --dbpath data/db --port 5000",
+    "start-db": "mongod --dbpath data/db --port 27017",
     "dev": "npm-run-all --parallel start-db start",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
