@@ -23,7 +23,12 @@ passport.use(new SpotifyStrategy({
     return done(null, user);
 }));
 
-app.use(session({secret: 'asfhhgd'}));
+app.use(session({
+    secret: 'asfhhgd',
+    cookie: {
+        maxAge: 3600000
+    }
+}));
 app.use(passport.initialize());
 app.use(passport.session());
 
