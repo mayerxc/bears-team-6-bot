@@ -28,7 +28,15 @@ passport.use(new SpotifyStrategy({
 				}
 
 				if (user) {
-					return done(null, user);
+                    user.spotifyToken = accessToken;
+
+					user.save(function (err) {
+						if (err) {
+							throw err;
+						}
+
+						return done(null, user);
+					});
 				} else {
                     var state = JSON.parse(req.query.state);    
                     
@@ -147,7 +155,7 @@ app.get('/auth/spotify/callback',
   });
 
 app.post('/login', (req, res) => {
-    const url = 'http://d17fe985.ngrok.io/auth/spotify?userName=' + req.body.user_name + '&userId=' + req.body.user_id + '&teamName=' + req.body.team_domain + '&channelName=' + req.body.channel_name + '&responseUrl=' + req.body.response_url;
+    const url = 'http://2609e14a.ngrok.io/auth/spotify?userName=' + req.body.user_name + '&userId=' + req.body.user_id + '&teamName=' + req.body.team_domain + '&channelName=' + req.body.channel_name + '&responseUrl=' + req.body.response_url;
     
     const responseObj = {
         'text': 'Click the link below to login',
