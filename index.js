@@ -28,7 +28,15 @@ passport.use(new SpotifyStrategy({
 				}
 
 				if (user) {
-					return done(null, user);
+                    user.spotifyToken = accessToken;
+
+					user.save(function (err) {
+						if (err) {
+							throw err;
+						}
+
+						return done(null, user);
+					});
 				} else {
                     var state = JSON.parse(req.query.state);    
                     
@@ -72,6 +80,7 @@ app.get('/success', function(req, res) {
 // TODO: Does this need to return anything?
 // TODO: factor out find user and not found/log-in message
 app.post('/recentlyPlayed', function (req, res){
+    console.log(req.body.user_id);
     User.findOne({ 'slackUserId': req.body.user_id }, function (err, user) {
         if (err) {
             throw err;
@@ -93,6 +102,7 @@ app.post('/recentlyPlayed', function (req, res){
                     });
                 });
                 
+                console.log('req.body.response_url is: ' + req.body.response_url);
                 axios({
                     method: 'post',
                     url: req.body.response_url,
