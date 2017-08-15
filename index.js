@@ -8,7 +8,7 @@ const mongoose = require('mongoose');
 const User = require('./models/user');
 require('dotenv').load();
 
-mongoose.connect('mongodb://localhost:5000/spotifyJukebox');
+mongoose.connect('mongodb://localhost:27017/spotifyJukebox');
 mongoose.Promise = global.Promise;
 
 var app = express();
@@ -38,9 +38,11 @@ passport.use(new SpotifyStrategy({
                     unewUserser = Object.assign(newUser, state.slack);				
 
 					newUser.save(function (err) {
-						if (err) {
-							throw err;
-						}
+                        if(err) {
+                             throw err;
+                        }    
+                       
+						
 
 						return done(null, newUser);
 					});
