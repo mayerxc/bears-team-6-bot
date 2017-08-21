@@ -123,10 +123,31 @@ app.post('/recentlyPlayed', function (req, res){
 
 });
 
-app.get('/auth/spotify/',  
-  function(req, res, next){    
+/* 
+//chris's try at creating a public playlist
+app.post('/createPlayList', function(req, res) {
+    User.findOne({ 'slackUserId': req.body.user_id }, function (err, user) {
+        if (err) {
+            throw err;
+        }
+        if (user) {
+            axios({
+                method: 'post',
+                url: 'https://api.spotify.com/v1/users/' + user.spotifyId + '/playlists',
+                headers: {Authorization: 'Bearer ' + user.spotifyToken}
+                data: {
+                    "description": "New playlist description",
+                    "public": true,
+                    "name": "Chris's playlist"
+                }
+            });
+        });
+});
+
+ */
+app.get('/auth/spotify/', function(req, res, next) {    
     passport.authenticate('spotify', {
-        scope: ['user-read-email', 'user-read-private', 'user-read-recently-played'],
+        scope: ['user-read-email', 'user-read-private', 'user-read-recently-played', 'playlist-modify-public'],
         showDialog: true,
         state: JSON.stringify({
             slack: {
@@ -157,7 +178,7 @@ app.get('/auth/spotify/callback',
   });
 
 app.post('/login', (req, res) => {
-    const url = 'https://8e53e4da.ngrok.io/auth/spotify?userName=' + req.body.user_name + '&userId=' + req.body.user_id + '&teamName=' + req.body.team_domain + '&channelName=' + req.body.channel_name + '&responseUrl=' + req.body.response_url;
+    const url = process.env.NGROK + '/auth/spotify?userName=' + req.body.user_name + '&userId=' + req.body.user_id + '&teamName=' + req.body.team_domain + '&channelName=' + req.body.channel_name + '&responseUrl=' + req.body.response_url;
     
     const responseObj = {
         'text': 'Click the link below to login',
