@@ -85,7 +85,7 @@ app.get('/success', function(req, res) {
 // TODO: Does this need to return anything?
 // TODO: factor out find user and not found/log-in message
 app.post('/recentlyPlayed', function (req, res){
-    console.log(req.body.user_id);
+    console.log(`req.body.user_id is: ${req.body.user_id} , should be slackID`);
     User.findOne({ 'slackUserId': req.body.user_id }, function (err, user) {
         if (err) {
             throw err;
@@ -128,28 +128,47 @@ app.post('/recentlyPlayed', function (req, res){
 
 });
 
-/* 
-//chris's try at creating a public playlist
-app.post('/createPlayList', function(req, res) {
+
+//chris's try at adding a song to a playlist playlist
+//Hard coded, need to get the search going first then I can refactor
+app.post('/addSong', function(req, res) {
+    var playlistId = '3COztoVBIDSjkct6JGHITs';
+    var chris_spotify_id = 'mayerxc11';
+    var track = 'spotify:track:7FpoD2ZlcBSj05rEHSZoiB'
+    var addTrackUrl = `https://api.spotify.com/v1/users/${ chris_spotify_id }/playlists/${ playlistId }/tracks?uris=${ track }`;
     User.findOne({ 'slackUserId': req.body.user_id }, function (err, user) {
         if (err) {
             throw err;
         }
         if (user) {
+
             axios({
                 method: 'post',
-                url: 'https://api.spotify.com/v1/users/' + user.spotifyId + '/playlists',
+                url: addTrackUrl,
                 headers: {Authorization: 'Bearer ' + user.spotifyToken}
-                data: {
-                    "description": "New playlist description",
-                    "public": true,
-                    "name": "Chris's playlist"
-                }
+            }).then(function (response) {
+                axios({
+                    method: 'post',
+                    url: req.body.response_url,
+                    headers: {'content-type': 'application/json'},
+                    data: {text: 'it worked, pink song added bitches'}
+                }); 
+            })
+                             
+        } else { 
+            axios({
+                method: 'post',
+                url: req.body.response_url,
+                headers: {'content-type': 'application/json'},
+                data: {text: 'Please sign up with /login, failed in adding song to playlist'}
             });
-        });
+                         
+        }
+    });
+
 });
 
- */
+
 app.get('/auth/spotify/', function(req, res, next) {    
     passport.authenticate('spotify', {
         scope: ['user-read-email', 'user-read-private', 'user-read-recently-played', 'playlist-modify-public'],
