@@ -137,6 +137,8 @@ app.post('/createPlaylist', function(req, res) {
             axios({
                 method: 'post',
                 url: 'https://api.spotify.com/v1/users/' + req.body.user_id + '/playlists',
+                headers: {Authorization: 'Bearer ' + user.spotifyToken},
+                
             })
         }
     })
