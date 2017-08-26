@@ -18,7 +18,7 @@ app.use(bodyParser.json());
 passport.use(new SpotifyStrategy({
     clientID: process.env.SPOTIFY_ID,
     clientSecret: process.env.SPOTIFY_SECRET,
-    callbackURL: 'http://localhost:3000/auth/spotify/callback',
+    callbackURL: 'http://dd1bda5c.ngrok.io/auth/spotify/callback',
     passReqToCallback: true   
 }, function(req, accessToken, refreshToken, profile, done) {
 		process.nextTick(function () {
@@ -86,6 +86,7 @@ app.get('/success', function(req, res) {
 // TODO: factor out find user and not found/log-in message
 app.post('/recentlyPlayed', function (req, res){
     User.findOne({ 'slackUserId': req.body.user_id }, function (err, user) {
+        console.log(req.body.user_id);
         if (err) {
             throw err;
         }
@@ -126,6 +127,21 @@ app.post('/recentlyPlayed', function (req, res){
 
 });
 
+app.post('/createPlaylist', function(req, res) {
+    User.findOne({'slackUserId': req.body.userId}, function(err, user) {
+        if (err) {
+            throw err;
+        }
+
+        if (user) {
+            axios({
+                method: 'post',
+                url: 'https://api.spotify.com/v1/users/' + req.body.user_id + '/playlists',
+            })
+        }
+    })
+});
+
 app.get('/auth/spotify/',  
   function(req, res, next){    
     passport.authenticate('spotify', {
@@ -160,8 +176,7 @@ app.get('/auth/spotify/callback',
   });
 
 app.post('/login', (req, res) => {
-    const url = 'http://2609e14a.ngrok.io/auth/spotify?userName=' + req.body.user_name + '&userId=' + req.body.user_id + '&teamName=' + req.body.team_domain + '&channelName=' + req.body.channel_name + '&responseUrl=' + req.body.response_url;
-    
+    const url = 'http://dd1bda5c.ngrok.io/auth/spotify?userName=' + req.body.user_name + '&userId=' + req.body.user_id + '&teamName=' + req.body.team_domain + '&channelName=' + req.body.channel_name + '&responseUrl=' + req.body.response_url;
     const responseObj = {
         'text': 'Click the link below to login',
         'attachments': [{
