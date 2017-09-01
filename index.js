@@ -128,6 +128,47 @@ app.post('/recentlyPlayed', function (req, res){
 
 });
 
+//chris's try at adding a song to a playlist playlist
+//Hard coded, need to get the search going first then I can refactor
+app.post('/addSong', function(req, res) {
+    var playlistId = '3COztoVBIDSjkct6JGHITs';
+    var chris_spotify_id = 'mayerxc11';
+    var track = 'spotify:track:7FpoD2ZlcBSj05rEHSZoiB'
+    var addTrackUrl = `https://api.spotify.com/v1/users/${ chris_spotify_id }/playlists/${ playlistId }/tracks?uris=${ track }`;
+    User.findOne({ 'slackUserId': req.body.user_id }, function (err, user) {
+        if (err) {
+            throw err;
+        }
+        if (user) {
+
+            axios({
+                method: 'post',
+                url: addTrackUrl,
+                headers: {Authorization: 'Bearer ' + user.spotifyToken}
+            }).then(function (response) {
+                axios({
+                    method: 'post',
+                    url: req.body.response_url,
+                    headers: {'content-type': 'application/json'},
+                    data: {text: 'it worked, pink song added bitches'}
+                }); 
+            })
+                             
+        } else { 
+            axios({
+                method: 'post',
+                url: req.body.response_url,
+                headers: {'content-type': 'application/json'},
+                data: {text: 'Please sign up with /login, failed in adding song to playlist'}
+            });
+                         
+        }
+    });
+
+});
+
+
+
 app.get('/auth/spotify/',  
   function(req, res, next){    
     passport.authenticate('spotify', {
