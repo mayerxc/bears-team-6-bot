@@ -187,7 +187,7 @@ app.post('/createPlaylist', function (req, res) {
 app.get('/auth/spotify/',  
   function(req, res, next){    
     passport.authenticate('spotify', {
-        scope: ['user-read-email', 'user-read-private', 'user-read-recently-played'],
+        scope: ['user-read-email', 'user-read-private', 'user-read-recently-played', 'playlist-modify-private', 'playlist-modify-public'],
         showDialog: true,
         state: JSON.stringify({
             slack: {
