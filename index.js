@@ -82,6 +82,13 @@ app.get('/success', function(req, res) {
     res.send('<h1>You have successfully logged in!!</h1>');
 });
 
+
+app.use('/search', require('./routes/search'));
+app.use('/action', require('./routes/action'));
+app.get('/add', (req, res) => {
+    console.log(req.query.uri);
+});
+
 // TODO: Does this need to return anything?
 // TODO: factor out find user and not found/log-in message
 app.post('/recentlyPlayed', function (req, res){
@@ -249,7 +256,11 @@ app.get('/auth/spotify/callback', passport.authenticate('spotify', { failureRedi
   });
 
 app.post('/login', (req, res) => {
+<<<<<<< HEAD
     const url = process.env.NGROK + '/auth/spotify?userName=' + req.body.user_name + '&userId=' + req.body.user_id + '&teamName=' + req.body.team_domain + '&channelName=' + req.body.channel_name + '&responseUrl=' + req.body.response_url;
+=======
+    const url = 'http://e91be47c.ngrok.io/auth/spotify?userName=' + req.body.user_name + '&userId=' + req.body.user_id + '&teamName=' + req.body.team_domain + '&channelName=' + req.body.channel_name + '&responseUrl=' + req.body.response_url;
+>>>>>>> 89fe7bb1a696ac6ebefe3a9ba0b0012af52b10c2
     
     const responseObj = {
         'text': 'Click the link below to login',
