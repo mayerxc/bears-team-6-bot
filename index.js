@@ -157,7 +157,7 @@ app.get('/auth/spotify/callback',
   });
 
 app.post('/login', (req, res) => {
-    const url = 'http://2609e14a.ngrok.io/auth/spotify?userName=' + req.body.user_name + '&userId=' + req.body.user_id + '&teamName=' + req.body.team_domain + '&channelName=' + req.body.channel_name + '&responseUrl=' + req.body.response_url;
+    const url = 'http://7e5df254.ngrok.io/auth/spotify?userName=' + req.body.user_name + '&userId=' + req.body.user_id + '&teamName=' + req.body.team_domain + '&channelName=' + req.body.channel_name + '&responseUrl=' + req.body.response_url;
     
     const responseObj = {
         'text': 'Click the link below to login',
