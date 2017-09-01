@@ -20,8 +20,12 @@ passport.use(new SpotifyStrategy({
     clientSecret: process.env.SPOTIFY_SECRET,
     callbackURL: 'http://localhost:3000/auth/spotify/callback',
     passReqToCallback: true   
+<<<<<<< HEAD
     }, 
     function(req, accessToken, refreshToken, profile, done) {
+=======
+}, function(req, accessToken, refreshToken, profile, done) {
+>>>>>>> parent of ce4840d... commit
 		process.nextTick(function () {
 			User.findOne({ 'spotifyId': profile.id }, function (err, user) {
 				if (err) {
@@ -142,65 +146,18 @@ app.post('/addSong', function(req, res) {
             throw err;
         }
         if (user) {
+
             axios({
                 method: 'post',
                 url: addTrackUrl,
                 headers: {Authorization: 'Bearer ' + user.spotifyToken}
             }).then(function (response) {
-                var message = {
-                    "text": "This is your first interactive message, song added bitches!",
-                    "attachments": [
-                        {
-                            "text": "Building buttons is easy right?",
-                            "fallback": "Shame... buttons aren't supported in this land",
-                            "callback_id": "button_tutorial",
-                            "color": "#3AA3E3",
-                            "attachment_type": "default",
-                            "actions": [
-                                {
-                                    "name": "yes",
-                                    "text": "yes",
-                                    "type": "button",
-                                    "value": "yes"
-                                },
-                                {
-                                    "name": "no",
-                                    "text": "no",
-                                    "type": "button",
-                                    "value": "no"
-                                },
-                                {
-                                    "name": "maybe",
-                                    "text": "maybe",
-                                    "type": "button",
-                                    "value": "maybe",
-                                    "style": "danger"
-                                }
-                            ]
-                        }
-                    ]
-                }
                 axios({
                     method: 'post',
                     url: req.body.response_url,
                     headers: {'content-type': 'application/json'},
-/*                  data: {
-                        text: 'it worked, song added bitches',
-                        attachments: [
-                            {
-                                text: 'testing a button',
-                                attachment_type: 'default',
-                                actions: {
-                                    name: "test",
-                                    text: 'test',
-                                    type: "button",
-                                    value: 'test'
-                                }
-                            }
-                        ]    
-                    } */
-                    data: message
-                });
+                    data: {text: 'it worked, pink song added bitches'}
+                }); 
             })
                              
         } else { 
@@ -215,8 +172,6 @@ app.post('/addSong', function(req, res) {
     });
 
 });
-
-
 
 
 app.get('/auth/spotify/', function(req, res, next) {    
@@ -235,7 +190,9 @@ app.get('/auth/spotify/', function(req, res, next) {
     })(req, res, next);
   });  
 
-app.get('/auth/spotify/callback', passport.authenticate('spotify', { failureRedirect: '/' }), function(req, res) {
+app.get('/auth/spotify/callback',
+  passport.authenticate('spotify', { failureRedirect: '/' }),
+  function(req, res) {
     // Successful authentication, redirect home.
     var state = JSON.parse(req.query.state);
     var responseUrl = state.responseUrl;
