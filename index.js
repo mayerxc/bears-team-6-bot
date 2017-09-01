@@ -20,12 +20,7 @@ passport.use(new SpotifyStrategy({
     clientSecret: process.env.SPOTIFY_SECRET,
     callbackURL: 'http://localhost:3000/auth/spotify/callback',
     passReqToCallback: true   
-<<<<<<< HEAD
-    }, 
-    function(req, accessToken, refreshToken, profile, done) {
-=======
 }, function(req, accessToken, refreshToken, profile, done) {
->>>>>>> parent of ce4840d... commit
 		process.nextTick(function () {
 			User.findOne({ 'spotifyId': profile.id }, function (err, user) {
 				if (err) {
