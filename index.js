@@ -82,6 +82,13 @@ app.get('/success', function(req, res) {
     res.send('<h1>You have successfully logged in!!</h1>');
 });
 
+
+app.use('/search', require('./routes/search'));
+app.use('/action', require('./routes/action'));
+app.get('/add', (req, res) => {
+    console.log(req.query.uri);
+});
+
 // TODO: Does this need to return anything?
 // TODO: factor out find user and not found/log-in message
 app.post('/recentlyPlayed', function (req, res){
