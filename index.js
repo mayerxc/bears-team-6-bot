@@ -148,7 +148,6 @@ app.post('/createPlaylist', function (req, res) {
             throw err;
         }
         var playlistName = req.body.team_domain + '_' + req.body.channel_name;
-        console.log(JSON.stringify({name: playlistName, collaborative: true}));
         if (user) {
             axios({
                 method: 'post',
@@ -157,10 +156,26 @@ app.post('/createPlaylist', function (req, res) {
                     Authorization: 'Bearer ' + user.spotifyToken,
                     'content-type': 'application/json'
                 },
-                data: JSON.stringify({name: playlistName, collaborative: true})
+                data: {
+                    name: playlistName,
+                    public: false,
+                    collaborative: true
+                }
             }).then(function (response) {
-                console.log(response);
+                var playlistUrl = response.data.external_urls.spotify;
+
+                axios({
+                    method: 'post',
+                    url: req.body.response_url,
+                    headers: {
+                        'content-type': 'application/json'
+                    },
+                    data: {
+                        text: 'Success! Check out your new playlist ' + playlistUrl
+                    }
+                });
             });
+
         } else {
             axios({
                 method: 'post',
