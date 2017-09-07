@@ -176,9 +176,61 @@ app.post('/addSong', function(req, res) {
 });
 
 
-app.get('/auth/spotify/', function(req, res, next) {    
+app.post('/createPlaylist', function (req, res) {
+    User.findOne({
+        'slackUserId': req.body.user_id
+    }, function (err, user) {
+        if (err) {
+            throw err;
+        }
+        var playlistName = req.body.team_domain + '_' + req.body.channel_name;
+        if (user) {
+            axios({
+                method: 'post',
+                url: 'https://api.spotify.com/v1/users/' + user.spotifyId + '/playlists',
+                headers: {
+                    Authorization: 'Bearer ' + user.spotifyToken,
+                    'content-type': 'application/json'
+                },
+                data: {
+                    name: playlistName,
+                    public: false,
+                    collaborative: true
+                }
+            }).then(function (response) {
+                var playlistUrl = response.data.external_urls.spotify;
+
+                axios({
+                    method: 'post',
+                    url: req.body.response_url,
+                    headers: {
+                        'content-type': 'application/json'
+                    },
+                    data: {
+                        text: 'Success! Check out your new playlist ' + playlistUrl
+                    }
+                });
+            });
+
+        } else {
+            axios({
+                method: 'post',
+                url: req.body.response_url,
+                headers: {
+                    'content-type': 'application/json'
+                },
+                data: {
+                    text: 'Please sign up with /login'
+                }
+            });
+        }
+    });
+});
+
+app.get('/auth/spotify/',  
+  function(req, res, next){    
     passport.authenticate('spotify', {
-        scope: ['user-read-email', 'user-read-private', 'user-read-recently-played', 'playlist-modify-public'],
+        scope: ['user-read-email', 'user-read-private', 'user-read-recently-played', 'playlist-modify-private', 'playlist-modify-public'],
         showDialog: true,
         state: JSON.stringify({
             slack: {
@@ -225,6 +277,5 @@ app.post('/login', (req, res) => {
 app.listen(3000, function() {
     console.log('now listening on port 3000');
 });
-
 
 
