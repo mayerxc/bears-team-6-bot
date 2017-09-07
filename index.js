@@ -46,9 +46,11 @@ passport.use(new SpotifyStrategy({
                     unewUserser = Object.assign(newUser, state.slack);				
 
 					newUser.save(function (err) {
-						if (err) {
-							throw err;
-						}
+                        if(err) {
+                             throw err;
+                        }    
+                       
+						
 
 						return done(null, newUser);
 					});
@@ -75,7 +77,7 @@ passport.deserializeUser(function(user, done) {
 });
 
 app.get('/', function(req, res) {
-    res.send('<h1>Hello World</h1><br/><a href="/auth/spotify">Spotify Test</a>');
+    res.send('<h1>Hello World!!!!!!</h1><br/><a href="/auth/spotify">Spotify Test</a>');
 });
 
 app.get('/success', function(req, res) {
@@ -135,7 +137,10 @@ app.post('/recentlyPlayed', function (req, res){
 
 });
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> 1aecb3f9a5bea5cb29cd0ff78584d1200f4d948d
 //chris's try at adding a song to a playlist playlist
 //Hard coded, need to get the search going first then I can refactor
 app.post('/addSong', function(req, res) {
@@ -176,6 +181,7 @@ app.post('/addSong', function(req, res) {
 });
 
 
+<<<<<<< HEAD
 app.post('/createPlaylist', function (req, res) {
     User.findOne({
         'slackUserId': req.body.user_id
@@ -226,6 +232,8 @@ app.post('/createPlaylist', function (req, res) {
         }
     });
 });
+=======
+>>>>>>> 1aecb3f9a5bea5cb29cd0ff78584d1200f4d948d
 
 app.get('/auth/spotify/',  
   function(req, res, next){    
@@ -278,4 +286,6 @@ app.listen(3000, function() {
     console.log('now listening on port 3000');
 });
 
+console.log(process.env.SpotifyId);
+console.log(process.env.SpotifySecret);
 
