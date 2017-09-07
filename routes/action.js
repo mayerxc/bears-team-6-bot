@@ -5,11 +5,11 @@ const User = require('../models/user');
 
 router.route('/')
     .post((req, res) => {
-        let payload = JSON.parse(req.body.payload);
-        let actions = payload.actions;
+        let payload = JSON.parse(req.body.payload);        
+        let userInfo = JSON.parse(payload.actions[0].value);
 
-        if (actions[0].name == 'track') {
-            res.redirect(`/add?uri=${actions[0].value}`);
+        if (payload.actions[0].name == 'track') {
+            res.redirect(`/add?uri=${userInfo.uri}&spotifyId=${userInfo.spotifyId}&playlistId=${userInfo.playlistId}`);
         }
     });
 
