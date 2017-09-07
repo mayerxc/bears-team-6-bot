@@ -137,10 +137,6 @@ app.post('/recentlyPlayed', function (req, res){
 
 });
 
-<<<<<<< HEAD
-
-=======
->>>>>>> 1aecb3f9a5bea5cb29cd0ff78584d1200f4d948d
 //chris's try at adding a song to a playlist playlist
 //Hard coded, need to get the search going first then I can refactor
 app.post('/addSong', function(req, res) {
@@ -181,7 +177,6 @@ app.post('/addSong', function(req, res) {
 });
 
 
-<<<<<<< HEAD
 app.post('/createPlaylist', function (req, res) {
     User.findOne({
         'slackUserId': req.body.user_id
@@ -232,8 +227,6 @@ app.post('/createPlaylist', function (req, res) {
         }
     });
 });
-=======
->>>>>>> 1aecb3f9a5bea5cb29cd0ff78584d1200f4d948d
 
 app.get('/auth/spotify/',  
   function(req, res, next){    
