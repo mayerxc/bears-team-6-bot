@@ -11,7 +11,7 @@ const findUser = (userId, cb) => {
 
         if (user) {
             // TODO: find playlist that matches channel
-            cb(user.spotifyToken, {spotifyId: user.spotifyId, playlistId: 'field needs to be added to DB still'});
+            cb(user.spotifyToken, {spotifyId: user.spotifyId, playlistId: user.playlistId});//'playlistId needs to be added to DB still'});
         } else { 
             
         }

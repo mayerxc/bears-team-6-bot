@@ -8,7 +8,8 @@ const userSchema = new Schema({
     slackTeam: String,
     slackChannel: String,
     spotifyId: String,
-    spotifyToken: String // TODO: hash
+    spotifyToken: String, // TODO: hash
+    playlistId: String //added by Chris
 });
 
 module.exports = mongoose.model('User', userSchema);

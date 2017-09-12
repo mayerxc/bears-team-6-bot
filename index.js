@@ -43,6 +43,7 @@ passport.use(new SpotifyStrategy({
                     var newUser = new User();
                     newUser.spotifyId = profile.id;
                     newUser.spotifyToken = accessToken;
+                    newUser.playlistId = "3COztoVBIDSjkct6JGHITs"// don't want to hardcode, change later
                     unewUserser = Object.assign(newUser, state.slack);				
 
 					newUser.save(function (err) {
@@ -87,11 +88,9 @@ app.get('/success', function(req, res) {
 
 app.use('/search', require('./routes/search'));
 app.use('/action', require('./routes/action'));
-app.get('/add', (req, res) => {
-    console.log('uri: ', req.query.uri);
-    console.log('spotifyId: ', req.query.spotifyId);
-    console.log('playlistId: ', req.query.playlistId);
-});
+
+
+
 
 // TODO: Does this need to return anything?
 // TODO: factor out find user and not found/log-in message
@@ -138,15 +137,25 @@ app.post('/recentlyPlayed', function (req, res){
 
 
 });
+/* app.get('/add', (req, res) => {
+    console.log('uri: ', req.query.uri);
+    console.log('spotifyId: ', req.query.spotifyId);
+    console.log('playlistId: ', req.query.playlistId);
+}); */
 
 //chris's try at adding a song to a playlist playlist
 //Hard coded, need to get the search going first then I can refactor
 app.get('/add', function(req, res) {
-    var playlistId = '3COztoVBIDSjkct6JGHITs';
-    var chris_spotify_id = 'mayerxc11';
-    var track = 'spotify:track:7FpoD2ZlcBSj05rEHSZoiB'
-    var addTrackUrl = `https://api.spotify.com/v1/users/${ chris_spotify_id }/playlists/${ playlistId }/tracks?uris=${ track }`;
-    User.findOne({ 'slackUserId': req.body.user_id }, function (err, user) {
+    var responseActionUrl = req.query.actionsUrl;
+    var spotifyPlaylistId = req.query.playlistId; 
+    //console.log(spotifyPlaylistId)
+    var chris_spotify_id = req.query.spotifyId;
+    //console.log(chris_spotify_id);
+    var track = req.query.uri //'spotify:track:7FpoD2ZlcBSj05rEHSZoiB'
+    //console.log(track);
+    var addTrackUrl = `https://api.spotify.com/v1/users/${ chris_spotify_id }/playlists/${ spotifyPlaylistId }/tracks?uris=${ track }`;
+    
+    User.findOne({ 'spotifyId': chris_spotify_id }, function (err, user) {
         if (err) {
             throw err;
         }
@@ -157,21 +166,24 @@ app.get('/add', function(req, res) {
                 url: addTrackUrl,
                 headers: {Authorization: 'Bearer ' + user.spotifyToken}
             }).then(function (response) {
+                //console.log(response);
                 axios({
                     method: 'post',
-                    url: req.body.response_url,
+                    url: responseActionUrl,
                     headers: {'content-type': 'application/json'},
-                    data: {text: 'it worked, pink song added bitches'}
-                }); 
+                    data: {text: 'it worked, song added'}
+                });
+                console.log("song added");
             })
                              
         } else { 
             axios({
                 method: 'post',
-                url: req.body.response_url,
+                url: responseActionUrl,
                 headers: {'content-type': 'application/json'},
                 data: {text: 'Please sign up with /login, failed in adding song to playlist'}
-            });
+            }); 
+            console.log("song not added.");
                          
         }
     });
@@ -264,11 +276,7 @@ app.get('/auth/spotify/callback',
   });
 
 app.post('/login', (req, res) => {
-<<<<<<< HEAD
     const url = process.env.NGROK + '/auth/spotify?userName=' + req.body.user_name + '&userId=' + req.body.user_id + '&teamName=' + req.body.team_domain + '&channelName=' + req.body.channel_name + '&responseUrl=' + req.body.response_url;
-=======
-    const url = 'http://4dd87f57.ngrok.io/auth/spotify?userName=' + req.body.user_name + '&userId=' + req.body.user_id + '&teamName=' + req.body.team_domain + '&channelName=' + req.body.channel_name + '&responseUrl=' + req.body.response_url;
->>>>>>> f137596823943e074c30c79492a66f01fb7a4097
     
     const responseObj = {
         'text': 'Click the link below to login',
