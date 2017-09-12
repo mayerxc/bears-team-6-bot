@@ -139,7 +139,7 @@ app.post('/recentlyPlayed', function (req, res){
 
 //chris's try at adding a song to a playlist playlist
 //Hard coded, need to get the search going first then I can refactor
-app.post('/addSong', function(req, res) {
+app.get('/add', function(req, res) {
     var playlistId = '3COztoVBIDSjkct6JGHITs';
     var chris_spotify_id = 'mayerxc11';
     var track = 'spotify:track:7FpoD2ZlcBSj05rEHSZoiB'
