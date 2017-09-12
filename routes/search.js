@@ -10,7 +10,8 @@ const findUser = (userId, cb) => {
         }
 
         if (user) {
-            cb(user.spotifyToken);
+            // TODO: find playlist that matches channel
+            cb(user.spotifyToken, {spotifyId: user.spotifyId, playlistId: 'field needs to be added to DB still'});
         } else { 
             
         }
@@ -18,7 +19,7 @@ const findUser = (userId, cb) => {
 };
 
 
-const searchTracks = (search, url, token) => {    
+const searchTracks = (search, url, token, userInfo) => {    
     axios({
         method: 'get',
         url: 'https://api.spotify.com/v1/search',
@@ -30,6 +31,7 @@ const searchTracks = (search, url, token) => {
         }
     }).then(function(response){ 
         let data = response.data.tracks.items.map((item) => {
+            userInfo.uri = item.uri;
             return {
                     "text": `${item.artists[0].name} - ${item.name}`,
                     "image_url": item.album.images[2].url,
@@ -43,7 +45,7 @@ const searchTracks = (search, url, token) => {
                             "text": "add to playlist",
                             "style": "danger",
                             "type": "button",
-                            "value": item.uri,
+                            "value": JSON.stringify(userInfo),
                             "confirm": {
                                 "title": "Are you sure?",
                                 "text": `Are you sure that you want to add ${item.artists[0].name} - ${item.name} to the playlist?`,
@@ -84,7 +86,7 @@ router.route('/')
                 case 'artist':
                     if (params.length < 2) return;
                     search = params.slice(1).join(' ');
-                    findUser(req.body.user_id, searchArtists.bind(null, search));
+                    findUser(req.body.user_id, searchArtists.bind(null, search, req.body.response_url));
                     break;
                 case 'track':
                     if (params.length < 2) return;
@@ -93,7 +95,7 @@ router.route('/')
                     break;
                 default:
                     search = params.slice(0).join(' ');
-                    findUser(req.body.user_id, searchTracks.bind(null, search));
+                    findUser(req.body.user_id, searchTracks.bind(null, search, req.body.response_url));
             }
         }
     });

@@ -88,7 +88,9 @@ app.get('/success', function(req, res) {
 app.use('/search', require('./routes/search'));
 app.use('/action', require('./routes/action'));
 app.get('/add', (req, res) => {
-    console.log(req.query.uri);
+    console.log('uri: ', req.query.uri);
+    console.log('spotifyId: ', req.query.spotifyId);
+    console.log('playlistId: ', req.query.playlistId);
 });
 
 // TODO: Does this need to return anything?
@@ -262,7 +264,11 @@ app.get('/auth/spotify/callback',
   });
 
 app.post('/login', (req, res) => {
+<<<<<<< HEAD
     const url = process.env.NGROK + '/auth/spotify?userName=' + req.body.user_name + '&userId=' + req.body.user_id + '&teamName=' + req.body.team_domain + '&channelName=' + req.body.channel_name + '&responseUrl=' + req.body.response_url;
+=======
+    const url = 'http://4dd87f57.ngrok.io/auth/spotify?userName=' + req.body.user_name + '&userId=' + req.body.user_id + '&teamName=' + req.body.team_domain + '&channelName=' + req.body.channel_name + '&responseUrl=' + req.body.response_url;
+>>>>>>> f137596823943e074c30c79492a66f01fb7a4097
     
     const responseObj = {
         'text': 'Click the link below to login',
